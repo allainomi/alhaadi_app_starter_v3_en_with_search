@@ -1,4 +1,4 @@
-name: Build and Deploy
+name: Flutter CI/CD
 
 on:
   push:
@@ -6,67 +6,139 @@ on:
   pull_request:
     branches: [ main, master ]
 
+env:
+  FLUTTER_VERSION: '3.19.5'
+
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
     
     steps:
-    - name: Code Checkout
+    - name: Checkout Code
       uses: actions/checkout@v4
       
-    - name: Node.js Setup
-      uses: actions/setup-node@v4
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
       with:
-        node-version: '18'
-        cache: 'npm'
+        flutter-version: ${{ env.FLUTTER_VERSION }}
+        cache: true
         
-    - name: Dependencies Install
-      run: npm ci
+    - name: Show Flutter Version
+      run: flutter --version
       
-    - name: Build Application
-      run: npm run build
+    - name: Get Dependencies
+      run: flutter pub get
       
-    - name: Tests Run
-      run: npm test
+    - name: Run Tests
+      run: flutter test
       
-    - name: Build Artifacts Upload
-      uses: actions/upload-artifact@v4
-      with:
-        name: build-files
-        path: |
-          dist/
-          build/
-          public/
-        retention-days: 7
-        compression-level: 9
-        
-    - name: Test Results Upload
+    - name: Upload Test Results
       uses: actions/upload-artifact@v4
       with:
         name: test-results
         path: |
-          test-results/
           coverage/
         retention-days: 30
 
-  deploy:
+  build-android:
     runs-on: ubuntu-latest
-    needs: build
+    needs: test
     
     steps:
-    - name: Code Checkout
+    - name: Checkout Code
       uses: actions/checkout@v4
       
-    - name: Build Artifacts Download
-      uses: actions/download-artifact@v4
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
       with:
-        name: build-files
-        path: downloaded-artifacts/
+        flutter-version: ${{ env.FLUTTER_VERSION }}
+        cache: true
         
-    - name: Files List Show
-      run: ls -la downloaded-artifacts/
+    - name: Get Dependencies
+      run: flutter pub get
       
-    - name: Deploy to Server
-      run: |
-        echo "Deployment process here"
-        # اپنی ڈپلائمنٹ کمانڈز یہاں شامل کریں
+    - name: Build Android APK
+      run: flutter build apk --release
+      
+    - name: Upload APK Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: android-apk
+        path: build/app/outputs/flutter-apk/app-release.apk
+        retention-days: 7
+
+  build-web:
+    runs-on: ubuntu-latest
+    needs: test
+    
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+      
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: ${{ env.FLUTTER_VERSION }}
+        cache: true
+        
+    - name: Get Dependencies
+      run: flutter pub get
+      
+    - name: Build Web
+      run: flutter build web --release
+      
+    - name: Upload Web Build
+      uses: actions/upload-artifact@v4
+      with:
+        name: web-build
+        path: build/web/
+        retention-days: 7
+
+  analyze:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+      
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: ${{ env.FLUTTER_VERSION }}
+        cache: true
+        
+    - name: Get Dependencies
+      run: flutter pub get
+      
+    - name: Analyze Code
+      run: flutter analyze
+      
+    - name: Format Check
+      run: flutter format --set-exit-if-changed .
+
+  build-ios:
+    runs-on: macos-latest
+    needs: test
+    
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+      
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: ${{ env.FLUTTER_VERSION }}
+        cache: true
+        
+    - name: Get Dependencies
+      run: flutter pub get
+      
+    - name: Build iOS
+      run: flutter build ios --release --no-codesign
+      
+    - name: Upload iOS Build
+      uses: actions/upload-artifact@v4
+      with:
+        name: ios-build
+        path: build/ios/
+        retention-days: 7
