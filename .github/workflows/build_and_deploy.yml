@@ -1,4 +1,4 @@
-name: Flutter Build and Deploy
+name: Flutter Build - Your Actual App
 
 on:
   push:
@@ -18,25 +18,36 @@ jobs:
         flutter-version: '3.19.5'
         cache: true
         
-    - name: Setup Platforms Only (Without Overwriting)
+    - name: Verify Your Code Exists
       run: |
-        # صرف platform ڈائریکٹریز بنائیں بغیر کوڈ overwrite کیے
-        if [ ! -d "android" ]; then
-          flutter create --platforms android .
-        fi
-        if [ ! -d "web" ]; then
-          flutter create --platforms web .
-        fi
+        echo "=== Checking your actual code ==="
+        ls -la lib/
+        echo "=== Your main.dart file ==="
+        head -20 lib/main.dart
+        echo "=== Your screens ==="
+        ls -la lib/screens/
         
     - name: Get Dependencies
       run: flutter pub get
       
-    - name: Build Web
-      run: flutter build web --release
-      
+    - name: Build Web (Without Overwrite)
+      run: |
+        # صرف اگر web ڈائریکٹری نہ ہو تو بنائیں
+        if [ ! -d "web" ]; then
+          flutter create --platforms web .
+        fi
+        flutter build web --release
+        
+    - name: Check Build Output
+      run: |
+        echo "=== Build Output Contents ==="
+        find build/web/ -type f -name "*.dart" | head -10
+        echo "=== Main dart.js file ==="
+        ls -la build/web/ | grep dart
+        
     - name: Upload Web Build
       uses: actions/upload-artifact@v4
       with:
-        name: web-build
+        name: your-actual-app-build
         path: build/web/
         retention-days: 7
