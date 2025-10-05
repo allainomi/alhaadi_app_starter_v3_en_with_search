@@ -12,22 +12,16 @@ jobs:
     - name: Checkout Code
       uses: actions/checkout@v4
       
-    - name: Fix Project Structure
+    - name: Verify Project Structure
       run: |
-        echo "=== Current Structure ==="
+        echo "=== Project Structure ==="
         ls -la
-        echo "=== Fixing Double Folder ==="
-        # اگر nested فولڈر موجود ہے تو اسے باہر نکالیں
-        if [ -d "alhaadi_app_starter_v3_en_with_search" ]; then
-          mv alhaadi_app_starter_v3_en_with_search/* .
-          mv alhaadi_app_starter_v3_en_with_search/.* . 2>/dev/null || true
-          rmdir alhaadi_app_starter_v3_en_with_search
-        fi
-        
-        echo "=== Fixed Structure ==="
-        ls -la
-        echo "=== lib directory ==="
+        echo "=== lib/ directory contents ==="
         ls -la lib/
+        echo "=== Checking main.dart ==="
+        head -10 lib/main.dart
+        echo "=== Checking pubspec.yaml ==="
+        head -20 pubspec.yaml
         
     - name: Setup Flutter
       uses: subosito/flutter-action@v2
@@ -35,12 +29,26 @@ jobs:
         flutter-version: '3.19.5'
         cache: true
         
+    - name: Create Web Platform
+      run: |
+        # صرف web platform شامل کریں بغیر overwrite کیے
+        if [ ! -d "web" ]; then
+          flutter create --platforms web --no-overwrite .
+        fi
+        
     - name: Get Dependencies
       run: flutter pub get
       
     - name: Build Web
       run: flutter build web --release
       
+    - name: Verify Build Contains Your Code
+      run: |
+        echo "=== Build Output ==="
+        ls -la build/web/
+        echo "=== Checking main.dart.js size ==="
+        ls -lh build/web/ | grep main.dart.js
+        
     - name: Upload Web Build
       uses: actions/upload-artifact@v4
       with:
