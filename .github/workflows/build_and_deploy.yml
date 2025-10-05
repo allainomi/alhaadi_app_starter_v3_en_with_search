@@ -3,8 +3,6 @@ name: Flutter Build and Deploy
 on:
   push:
     branches: [ main, master ]
-  pull_request:
-    branches: [ main, master ]
 
 jobs:
   build:
@@ -23,9 +21,11 @@ jobs:
     - name: Get Dependencies
       run: flutter pub get
       
-    - name: Clean Project
-      run: flutter clean
-      
+    - name: Fix Android Gradle
+      run: |
+        rm -rf android
+        flutter create --platforms android --project-name alhaadi_app .
+        
     - name: Build APK
       run: flutter build apk --release
       
