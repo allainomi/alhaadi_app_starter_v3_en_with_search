@@ -11,3 +11,4 @@ Usage:
 1. Run `python3 scripts/merge_quran.py` to fetch full Quran data.
 2. flutter pub get
 3. flutter run
+# alhaadi_app_starter_v3_en_with_search
