@@ -18,10 +18,15 @@ jobs:
         flutter-version: '3.19.5'
         cache: true
         
-    - name: Create Web Directory
+    - name: Setup Platforms Only (Without Overwriting)
       run: |
-        rm -rf web
-        flutter create --platforms web .
+        # صرف platform ڈائریکٹریز بنائیں بغیر کوڈ overwrite کیے
+        if [ ! -d "android" ]; then
+          flutter create --platforms android .
+        fi
+        if [ ! -d "web" ]; then
+          flutter create --platforms web .
+        fi
         
     - name: Get Dependencies
       run: flutter pub get
