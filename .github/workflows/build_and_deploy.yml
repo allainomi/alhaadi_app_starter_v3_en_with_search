@@ -1,7 +1,9 @@
-name: Flutter Build
+name: Flutter Build and Deploy
 
 on:
   push:
+    branches: [ main, master ]
+  pull_request:
     branches: [ main, master ]
 
 jobs:
@@ -24,27 +26,22 @@ jobs:
     - name: Clean Project
       run: flutter clean
       
-    - name: Fix Android Gradle (If needed)
-      run: |
-        if [ ! -f "android/app/src/main/AndroidManifest.xml" ]; then
-          echo "Recreating Android platform files..."
-          flutter create --platforms android --project-name alhaadi_app .
-        fi
-        
     - name: Build APK
-      run: flutter build apk --release --no-analytics
+      run: flutter build apk --release
       
     - name: Build Web
-      run: flutter build web --release --no-analytics
+      run: flutter build web --release
       
     - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
-        name: app-release
+        name: android-apk
         path: build/app/outputs/flutter-apk/app-release.apk
+        retention-days: 7
         
     - name: Upload Web Build
       uses: actions/upload-artifact@v4
       with:
-        name: web-release
+        name: web-build
         path: build/web/
+        retention-days: 7
