@@ -1,4 +1,4 @@
-name: Build Flutter Web App
+name: Build Alhaadi App
 
 on:
   push:
@@ -43,9 +43,9 @@ jobs:
         echo "=== Main Files Check ==="
         ls -la build/web/ | grep -E "(index.html|main.dart.js)"
         
-    - name: Upload Web Build
+    - name: Upload Alhaadi App Build
       uses: actions/upload-artifact@v4
       with:
-        name: flutter-web-app
+        name: alhaadi-app
         path: build/web/
         retention-days: 30
