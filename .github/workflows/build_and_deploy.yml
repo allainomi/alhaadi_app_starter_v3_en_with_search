@@ -21,14 +21,21 @@ jobs:
     - name: Get Dependencies
       run: flutter pub get
       
-    - name: Analyze Code (Continue on Error)
-      run: flutter analyze || echo "Analysis found issues, but continuing build..."
+    - name: Clean Project
+      run: flutter clean
       
+    - name: Fix Android Gradle (If needed)
+      run: |
+        if [ ! -f "android/app/src/main/AndroidManifest.xml" ]; then
+          echo "Recreating Android platform files..."
+          flutter create --platforms android --project-name alhaadi_app .
+        fi
+        
     - name: Build APK
-      run: flutter build apk --release
+      run: flutter build apk --release --no-analytics
       
     - name: Build Web
-      run: flutter build web --release
+      run: flutter build web --release --no-analytics
       
     - name: Upload APK
       uses: actions/upload-artifact@v4
