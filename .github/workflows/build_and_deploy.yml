@@ -18,27 +18,17 @@ jobs:
         flutter-version: '3.19.5'
         cache: true
         
+    - name: Create Web Directory
+      run: |
+        rm -rf web
+        flutter create --platforms web .
+        
     - name: Get Dependencies
       run: flutter pub get
-      
-    - name: Fix Android Gradle
-      run: |
-        rm -rf android
-        flutter create --platforms android .
-        
-    - name: Build APK
-      run: flutter build apk --release
       
     - name: Build Web
       run: flutter build web --release
       
-    - name: Upload APK
-      uses: actions/upload-artifact@v4
-      with:
-        name: android-apk
-        path: build/app/outputs/flutter-apk/app-release.apk
-        retention-days: 7
-        
     - name: Upload Web Build
       uses: actions/upload-artifact@v4
       with:
