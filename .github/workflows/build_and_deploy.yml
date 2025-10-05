@@ -1,4 +1,4 @@
-name: Flutter Build - Your Actual App
+name: Flutter Build - Debug Version
 
 on:
   push:
@@ -12,46 +12,40 @@ jobs:
     - name: Checkout Code
       uses: actions/checkout@v4
       
-    - name: Verify Project Structure
-      run: |
-        echo "=== Project Structure ==="
-        ls -la
-        echo "=== lib/ directory contents ==="
-        ls -la lib/
-        echo "=== Checking main.dart ==="
-        head -10 lib/main.dart
-        echo "=== Checking pubspec.yaml ==="
-        head -20 pubspec.yaml
-        
     - name: Setup Flutter
       uses: subosito/flutter-action@v2
       with:
         flutter-version: '3.19.5'
         cache: true
         
-    - name: Create Web Platform
+    - name: Debug - Check Main.dart Content
       run: |
-        # صرف web platform شامل کریں بغیر overwrite کیے
-        if [ ! -d "web" ]; then
-          flutter create --platforms web --no-overwrite .
-        fi
+        echo "=== MAIN.DART CONTENT (First 50 lines) ==="
+        head -50 lib/main.dart
+        echo "=== PACKAGE DEPENDENCIES ==="
+        grep -A 20 "dependencies:" pubspec.yaml
         
     - name: Get Dependencies
       run: flutter pub get
       
-    - name: Build Web
-      run: flutter build web --release
-      
-    - name: Verify Build Contains Your Code
+    - name: Build Web with Verbose
       run: |
-        echo "=== Build Output ==="
-        ls -la build/web/
-        echo "=== Checking main.dart.js size ==="
-        ls -lh build/web/ | grep main.dart.js
+        echo "=== BUILDING WEB ==="
+        flutter build web --release --verbose
+        echo "=== BUILD COMPLETED ==="
+        
+    - name: Check Build Output
+      run: |
+        echo "=== BUILD OUTPUT DETAILS ==="
+        find build/web/ -name "*.js" -o -name "*.html" | head -20
+        echo "=== MAIN.DART.JS SIZE ==="
+        ls -lh build/web/main.dart.js
+        echo "=== BUILD DIRECTORY TREE ==="
+        find build/web/ -type f | head -30
         
     - name: Upload Web Build
       uses: actions/upload-artifact@v4
       with:
-        name: your-actual-app-build
+        name: debug-build-info
         path: build/web/
         retention-days: 7
