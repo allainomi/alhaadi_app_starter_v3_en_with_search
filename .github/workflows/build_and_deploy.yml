@@ -1,4 +1,4 @@
-name: Flutter Build - Debug Version
+name: Build Flutter Web App
 
 on:
   push:
@@ -18,34 +18,34 @@ jobs:
         flutter-version: '3.19.5'
         cache: true
         
-    - name: Debug - Check Main.dart Content
+    - name: Clean and Recreate Web Directory
       run: |
-        echo "=== MAIN.DART CONTENT (First 50 lines) ==="
-        head -50 lib/main.dart
-        echo "=== PACKAGE DEPENDENCIES ==="
-        grep -A 20 "dependencies:" pubspec.yaml
+        echo "=== Cleaning existing files ==="
+        rm -rf web
+        rm -rf build
         
-    - name: Get Dependencies
+        echo "=== Creating proper web structure ==="
+        flutter create --platforms web --project-name alhaadi_app .
+        
+        echo "=== Verifying web directory ==="
+        ls -la web/
+        
+    - name: Install Dependencies
       run: flutter pub get
       
-    - name: Build Web with Verbose
+    - name: Build Web App
+      run: flutter build web --release
+      
+    - name: Verify Final Build
       run: |
-        echo "=== BUILDING WEB ==="
-        flutter build web --release --verbose
-        echo "=== BUILD COMPLETED ==="
-        
-    - name: Check Build Output
-      run: |
-        echo "=== BUILD OUTPUT DETAILS ==="
-        find build/web/ -name "*.js" -o -name "*.html" | head -20
-        echo "=== MAIN.DART.JS SIZE ==="
-        ls -lh build/web/main.dart.js
-        echo "=== BUILD DIRECTORY TREE ==="
-        find build/web/ -type f | head -30
+        echo "=== Final Build Contents ==="
+        ls -la build/web/
+        echo "=== Main Files Check ==="
+        ls -la build/web/ | grep -E "(index.html|main.dart.js)"
         
     - name: Upload Web Build
       uses: actions/upload-artifact@v4
       with:
-        name: debug-build-info
+        name: flutter-web-app
         path: build/web/
-        retention-days: 7
+        retention-days: 30
