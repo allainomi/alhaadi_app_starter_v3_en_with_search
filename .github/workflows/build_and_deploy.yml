@@ -24,7 +24,7 @@ jobs:
     - name: Fix Android Gradle
       run: |
         rm -rf android
-        flutter create --platforms android --project-name alhaadi_app .
+        flutter create --platforms android .
         
     - name: Build APK
       run: flutter build apk --release
