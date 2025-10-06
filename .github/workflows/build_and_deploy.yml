@@ -1,51 +1,32 @@
-name: Build Alhaadi App
+name: Flutter Build APK
 
 on:
   push:
-    branches: [ main, master ]
+    branches:
+      - main
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    
+
     steps:
-    - name: Checkout Code
-      uses: actions/checkout@v4
-      
-    - name: Setup Flutter
-      uses: subosito/flutter-action@v2
-      with:
-        flutter-version: '3.19.5'
-        cache: true
-        
-    - name: Clean and Recreate Web Directory
-      run: |
-        echo "=== Cleaning existing files ==="
-        rm -rf web
-        rm -rf build
-        
-        echo "=== Creating proper web structure ==="
-        flutter create --platforms web --project-name alhaadi_app .
-        
-        echo "=== Verifying web directory ==="
-        ls -la web/
-        
-    - name: Install Dependencies
-      run: flutter pub get
-      
-    - name: Build Web App
-      run: flutter build web --release
-      
-    - name: Verify Final Build
-      run: |
-        echo "=== Final Build Contents ==="
-        ls -la build/web/
-        echo "=== Main Files Check ==="
-        ls -la build/web/ | grep -E "(index.html|main.dart.js)"
-        
-    - name: Upload Alhaadi App Build
-      uses: actions/upload-artifact@v4
-      with:
-        name: alhaadi-app
-        path: build/web/
-        retention-days: 30
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.19.0'
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Build APK
+        run: flutter build apk --release
+
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: NoorUlHudaApp
+          path: build/app/outputs/flutter-apk/app-release.apk
+
