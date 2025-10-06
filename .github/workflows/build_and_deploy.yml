@@ -18,10 +18,10 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: '20'
-        cache: 'npm'  # اس لائن کو عارضی طور پر ہٹا دیں
+        # cache: 'npm'  # عارضی طور پر ہٹا دیں
 
     - name: Install dependencies
-      run: npm install  # npm ci کی جگہ npm install استعمال کریں
+      run: npm install  # npm ci کی جگہ
 
     - name: Run tests
       run: npm test
