@@ -1,18 +1,23 @@
 name: alhaadi_app_starter_v3_en_with_search
-description: A starter Flutter app with search functionality.
+description: A new Flutter project.
+
 publish_to: 'none'
 
+version: 1.0.0+1
+
 environment:
-  sdk: ">=2.17.0 <4.0.0"
+  sdk: ">=2.17.0 <4.0.0"  # یہ لائن تبدیل کریں
 
 dependencies:
   flutter:
     sdk: flutter
-  provider: ^6.0.5
+  provider: ^6.1.5
+  nested: ^1.0.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_lints: ^2.0.0
 
 flutter:
   uses-material-design: true
