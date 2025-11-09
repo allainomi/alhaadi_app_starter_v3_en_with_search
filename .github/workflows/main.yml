@@ -18,7 +18,7 @@ jobs:
       - name: 🐦 Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.13.0' # یا جو بھی آپ کا target version ہو
+          flutter-version: '3.13.0' # آپ کے app کے مطابق version رکھیں
 
       - name: 📦 Install dependencies
         run: flutter pub get
@@ -30,7 +30,7 @@ jobs:
         run: flutter build apk --release
 
       - name: 📤 Upload APK artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: release-apk
           path: build/app/outputs/flutter-apk/app-release.apk
