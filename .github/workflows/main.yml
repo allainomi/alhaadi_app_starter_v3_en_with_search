@@ -18,7 +18,10 @@ jobs:
       - name: 🐦 Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.13.0' # آپ کے app کے مطابق version رکھیں
+          flutter-version: '3.13.0'
+
+      - name: 🚫 Disable Flutter telemetry
+        run: flutter --disable-telemetry
 
       - name: 📦 Install dependencies
         run: flutter pub get
