@@ -1,21 +1,18 @@
 import 'package:flutter/material.dart';
-import 'views/home_view.dart';
-import 'core/theme.dart';
 
 void main() {
-  runApp(const AlHaadiApp());
+  runApp(MyApp());
 }
 
-class AlHaadiApp extends StatelessWidget {
-  const AlHaadiApp({super.key});
-
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'AlHaadi Starter v3',
-      theme: appTheme,
-      home: const HomeView(),
-      debugShowCheckedModeBanner: false,
+      title: 'Alhaadi App',
+      home: Scaffold(
+        appBar: AppBar(title: Text('Alhaadi App')),
+        body: Center(child: Text('Welcome to Alhaadi App')),
+      ),
     );
   }
 }
