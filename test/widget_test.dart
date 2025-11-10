@@ -1,9 +1,11 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:alhaadi_app_starter_v3_en_with_search/main.dart'; // اپنی main فائل کا راستہ
 
 void main() {
-  testWidgets('Counter increments', (WidgetTester tester) async {
+  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
-    await tester.pumpWidget(MyApp()); // اپنے ایپ ویجٹ سے تبدیل کریں
+    await tester.pumpWidget(MyApp());
 
     // Verify that our counter starts at 0.
     expect(find.text('0'), findsOneWidget);
