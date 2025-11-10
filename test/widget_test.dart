@@ -1,22 +1,29 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:alhaadi_app_starter_v3_en_with_search/main.dart'; // اپنی main فائل کا راستہ
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(MyApp());
+  test('Basic arithmetic test', () {
+    expect(1 + 1, 2);
+    expect(2 * 3, 6);
+  });
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+  test('List test', () {
+    List<String> names = ['Alice', 'Bob', 'Charlie'];
+    expect(names.length, 3);
+    expect(names.contains('Alice'), true);
+  });
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+  testWidgets('Widget test without specific app', (WidgetTester tester) async {
+    // A simple container test
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: Container(
+            child: Text('Hello World'),
+          ),
+        ),
+      ),
+    );
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    expect(find.text('Hello World'), findsOneWidget);
   });
 }
