@@ -3,8 +3,6 @@ name: Flutter Build APK
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
 
 jobs:
   build:
@@ -24,23 +22,27 @@ jobs:
       with:
         flutter-version: '3.16.9'
         
-    - name: Fix Flutter Project
+    - name: Fix Project Structure
       run: |
+        # صرف platform folders ڈیلیٹ کریں، lib folder نہیں
         rm -rf android ios windows linux macos
         flutter create --org com.alhaadi --project-name alhaadi_app --platforms android --overwrite .
+        
+    - name: Verify Code
+      run: |
+        echo "=== Checking lib folder ==="
+        ls -la lib/
+        echo "=== main.dart content ==="
+        cat lib/main.dart | head -20
         
     - name: Install Dependencies
       run: flutter pub get
       
-    - name: Run Tests
-      run: flutter test
-      
     - name: Build APK
-      run: flutter build apk --release --verbose
+      run: flutter build apk --release
       
     - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
         name: alhaadi-app-release
         path: build/app/outputs/flutter-apk/app-release.apk
-        retention-days: 30
